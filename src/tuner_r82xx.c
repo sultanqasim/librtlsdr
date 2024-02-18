@@ -464,7 +464,7 @@ static int r82xx_set_pll(struct r82xx_priv *priv, uint32_t freq)
 	uint8_t div_num = 0;
 	uint8_t vco_power_ref = 2;
 	uint8_t refdiv2 = 0;
-	uint8_t ni, si, nint, vco_fine_tune, val;
+	uint8_t ni, si, nint, val;
 	uint8_t data[5];
 	uint8_t regs[7];
 
@@ -499,19 +499,8 @@ static int r82xx_set_pll(struct r82xx_priv *priv, uint32_t freq)
 		mix_div = mix_div << 1;
 	}
 
-	rc = r82xx_read(priv, 0x00, data, sizeof(data));
-	if (rc < 0)
-		return rc;
-
 	if (priv->cfg->rafael_chip == CHIP_R828D)
 		vco_power_ref = 1;
-
-	vco_fine_tune = (data[4] & 0x30) >> 4;
-
-	if (vco_fine_tune > vco_power_ref)
-		div_num = div_num - 1;
-	else if (vco_fine_tune < vco_power_ref)
-		div_num = div_num + 1;
 
 	regs[0] = mask_reg8(regs[0], div_num << 5, 0xe0);
 
