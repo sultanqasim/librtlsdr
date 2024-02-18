@@ -465,7 +465,6 @@ static int r82xx_set_pll(struct r82xx_priv *priv, uint32_t freq)
 	uint8_t vco_power_ref = 2;
 	uint8_t refdiv2 = 0;
 	uint8_t ni, si, nint, val;
-	uint8_t data[5];
 	uint8_t regs[7];
 
 	/* Frequency in kHz */
@@ -548,30 +547,6 @@ static int r82xx_set_pll(struct r82xx_priv *priv, uint32_t freq)
 	rc = r82xx_write(priv, 0x10, regs, 7);
 	if (rc < 0)
 		return rc;
-
-	for (i = 0; i < 2; i++) {
-//		usleep_range(sleep_time, sleep_time + 1000);
-
-		/* Check if PLL has locked */
-		rc = r82xx_read(priv, 0x00, data, 3);
-		if (rc < 0)
-			return rc;
-		if (data[2] & 0x40)
-			break;
-
-		if (!i) {
-			/* Didn't lock. Increase VCO current */
-			rc = r82xx_write_reg_mask(priv, 0x12, 0x60, 0xe0);
-			if (rc < 0)
-				return rc;
-		}
-	}
-
-	if (!(data[2] & 0x40)) {
-		fprintf(stderr, "[R82XX] PLL not locked!\n");
-		priv->has_lock = 0;
-		return 0;
-	}
 
 	priv->has_lock = 1;
 
