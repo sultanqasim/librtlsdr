@@ -667,6 +667,7 @@ int rtlsdr_deinit_baseband(rtlsdr_dev_t *dev)
 		return -1;
 
 	if (dev->tuner && dev->tuner->exit) {
+		rtlsdr_demod_read_reg(dev, 0x0a, 0x01, 1); /* dummy read */
 		r = dev->tuner->exit(dev); /* deinitialize tuner */
 	}
 
@@ -884,6 +885,7 @@ int rtlsdr_set_center_freq(rtlsdr_dev_t *dev, uint32_t freq)
 	if (dev->direct_sampling) {
 		r = rtlsdr_set_if_freq(dev, freq);
 	} else if (dev->tuner && dev->tuner->set_freq) {
+		rtlsdr_demod_read_reg(dev, 0x0a, 0x01, 1); /* dummy read */
 		r = dev->tuner->set_freq(dev, freq - dev->offs_freq);
 	}
 
@@ -1006,6 +1008,7 @@ int rtlsdr_set_tuner_bandwidth(rtlsdr_dev_t *dev, uint32_t bw)
 		return -1;
 
 	if (dev->tuner->set_bw) {
+		rtlsdr_demod_read_reg(dev, 0x0a, 0x01, 1); /* dummy read */
 		r = dev->tuner->set_bw(dev, bw > 0 ? bw : dev->rate);
 		if (r)
 			return r;
@@ -1022,6 +1025,7 @@ int rtlsdr_set_tuner_gain(rtlsdr_dev_t *dev, int gain)
 		return -1;
 
 	if (dev->tuner->set_gain) {
+		rtlsdr_demod_read_reg(dev, 0x0a, 0x01, 1); /* dummy read */
 		r = dev->tuner->set_gain((void *)dev, gain);
 	}
 
@@ -1049,6 +1053,7 @@ int rtlsdr_set_tuner_if_gain(rtlsdr_dev_t *dev, int stage, int gain)
 		return -1;
 
 	if (dev->tuner->set_if_gain) {
+		rtlsdr_demod_read_reg(dev, 0x0a, 0x01, 1); /* dummy read */
 		r = dev->tuner->set_if_gain(dev, stage, gain);
 	}
 
@@ -1063,6 +1068,7 @@ int rtlsdr_set_tuner_gain_mode(rtlsdr_dev_t *dev, int mode)
 		return -1;
 
 	if (dev->tuner->set_gain_mode) {
+		rtlsdr_demod_read_reg(dev, 0x0a, 0x01, 1); /* dummy read */
 		r = dev->tuner->set_gain_mode((void *)dev, mode);
 	}
 
@@ -1098,6 +1104,7 @@ int rtlsdr_set_sample_rate(rtlsdr_dev_t *dev, uint32_t samp_rate)
 	dev->rate = (uint32_t)real_rate;
 
 	if (dev->tuner && dev->tuner->set_bw) {
+		rtlsdr_demod_read_reg(dev, 0x0a, 0x01, 1); /* dummy read */
 		dev->tuner->set_bw(dev, dev->bw > 0 ? dev->bw : dev->rate);
 	}
 
@@ -1152,6 +1159,7 @@ int rtlsdr_set_direct_sampling(rtlsdr_dev_t *dev, int on)
 
 	if (on) {
 		if (dev->tuner && dev->tuner->exit) {
+			rtlsdr_demod_read_reg(dev, 0x0a, 0x01, 1); /* dummy read */
 			r = dev->tuner->exit(dev);
 		}
 
@@ -1171,6 +1179,7 @@ int rtlsdr_set_direct_sampling(rtlsdr_dev_t *dev, int on)
 		dev->direct_sampling = on;
 	} else {
 		if (dev->tuner && dev->tuner->init) {
+			rtlsdr_demod_read_reg(dev, 0x0a, 0x01, 1); /* dummy read */
 			r |= dev->tuner->init(dev);
 		}
 
@@ -1237,6 +1246,7 @@ int rtlsdr_set_offset_tuning(rtlsdr_dev_t *dev, int on)
 		} else {
 			bw = dev->rate;
 		}
+		rtlsdr_demod_read_reg(dev, 0x0a, 0x01, 1); /* dummy read */
 		dev->tuner->set_bw(dev, bw);
 	}
 
