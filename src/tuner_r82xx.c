@@ -586,9 +586,6 @@ static int r82xx_set_pll(struct r82xx_priv *priv, uint32_t freq)
 
 	priv->has_lock = 1;
 
-	/* set pll autotune = 8kHz */
-	rc = r82xx_write_reg_mask(priv, 0x1a, 0x08, 0x08);
-
 	return rc;
 }
 
